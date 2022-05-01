@@ -1,0 +1,42 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "AWS CloudFormation template to create a DynamoDB table",
+    "Resources": {
+        "MessagesTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "TableName": "Messages",
+                "AttributeDefinitions": [
+                    {
+                        "AttributeName": "UserIDs",
+                        "AttributeType": "S"
+                    },
+                    {
+                        "AttributeName": "Counter",
+                        "AttributeType": "N"
+                    }
+                ],
+                "KeySchema": [
+                    {
+                        "AttributeName": "UserIDs",
+                        "KeyType": "HASH"
+
+                    },
+                    {
+                        "AttributeName": "Counter",
+                        "KeyType": "RANGE"
+
+                    }
+                ],
+                "ProvisionedThroughput": {
+                    "ReadCapacityUnits": 10,
+                    "WriteCapacityUnits": 10
+                },
+                "TimeToLiveSpecification":{
+                    "AttributeName": "ExpirationTime",
+                    "Enabled": true
+                }
+            }
+        } 
+    }
+}
