@@ -50,13 +50,13 @@ const Signup = () => {
 									console.log(err);
 								}
 								else {
-									console.log('successfully updated the attribute');
+									console.log('Updated the attribute');
 						 			console.log(result);
 								}
 								
 							});
 
-						}, 2000);
+						}, 1000);
 						
 					},
 					onFailure: err => {

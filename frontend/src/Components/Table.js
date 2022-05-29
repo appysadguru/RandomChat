@@ -14,9 +14,9 @@ const TableHeader = () => {
 const TableBody = props => {
 	
 	const mapUsers = props.mapUsers
-	const arrayOfUsernames = Array.from(mapUsers.keys());
+	const arrayUsernames = Array.from(mapUsers.keys());
 
-	const arrayUsers = arrayOfUsernames.map(username => 
+	const arrayUsers = arrayUsernames.map(username => 
 		<tr key={username}>
 			<td>{username}</td>
 			<td>{mapUsers.get(username)['UserStatus']}</td>

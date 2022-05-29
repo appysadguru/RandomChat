@@ -13,7 +13,7 @@ function FullScreenModal(props){
         
         const username = document.getElementById('username').value;
 		const password = 'dumMy@6';
-		
+
 		UserPool.signUp(username, password, [], null, (err, data) => {
 			if (err) {
                 console.error('inside UserPool.signUp err block');
@@ -39,6 +39,7 @@ function FullScreenModal(props){
 					onSuccess: data => {
 						console.log('successfully logged in. about to start updating the attribute');
 
+						props.setCurrentUser(username);
                         pollCognitoUsers(props.mapUsers, props.setmapUsers, username);
                         setShow(false);
 
@@ -54,7 +55,7 @@ function FullScreenModal(props){
 									console.log(err);
 								} else {
 									console.log('successfully updated the attribute');
-						 			console.log(result);
+						 			// console.log(result);
 								}
 							});
                         }, 2000);

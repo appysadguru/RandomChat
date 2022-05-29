@@ -23,7 +23,7 @@ export function pollCognitoUsers(mapUsers, setmapUsers, username) {
                 
 			do {
 				params = {
-					"Limit": 2,
+					"Limit": 60,
 					"UserPoolId": poolData['UserPoolId'],
 					"PaginationToken": paginateToken
 				};
