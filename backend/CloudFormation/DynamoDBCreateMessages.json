@@ -12,7 +12,7 @@
                         "AttributeType": "S"
                     },
                     {
-                        "AttributeName": "Timestamp",
+                        "AttributeName": "TimestampMilliseconds",
                         "AttributeType": "N"
                     }
                 ],
@@ -23,7 +23,7 @@
 
                     },
                     {
-                        "AttributeName": "Timestamp",
+                        "AttributeName": "TimestampMilliseconds",
                         "KeyType": "RANGE"
 
                     }

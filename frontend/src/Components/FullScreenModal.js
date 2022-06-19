@@ -37,7 +37,7 @@ function FullScreenModal(props){
 				
 				user.authenticateUser(authDetails, {
 					onSuccess: data => {
-						console.log('successfully logged in. about to start updating the attribute');
+						console.log('successfully logged in. about to start updating an attribute to keep myself online');
 
 						props.setCurrentUser(username);
                         pollCognitoUsers(props.mapUsers, props.setmapUsers, username);
@@ -53,9 +53,6 @@ function FullScreenModal(props){
 						 		if (err) {
 									console.error('Failed to update the attribute');
 									console.log(err);
-								} else {
-									console.log('successfully updated the attribute');
-						 			// console.log(result);
 								}
 							});
                         }, 2000);
@@ -73,8 +70,7 @@ function FullScreenModal(props){
 		});
 	}
 
-    
-    return (
+	return (
         <>
             <Modal show={show} backdrop='static' keyboard={false} size='lg' centered>
                 <Modal.Header>

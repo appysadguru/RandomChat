@@ -10,12 +10,11 @@ function App() {
 
 	const setCurrentUser = value => {
 		currentUser.current = value;
-		console.log('currentUser: '+currentUser.current);
 	}
 
 	return (
 		<div className="container">
-			<h1>Testing</h1>
+			<h1>{currentUser.current}</h1>
 			<br />
 			<FullScreenModal setmapUsers={setmapUsers} mapUsers={mapUsers} setCurrentUser={setCurrentUser}/>
 			<CustomAccordion mapUsers={mapUsers} currentUser={currentUser.current}/>
