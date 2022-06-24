@@ -8,7 +8,6 @@ async function getPairedUsers(Username,setPairedUsers) {
 		const data = await response.json();
 	    
 		const pairedUsers = new Map();
-
 		for (const element of data) {
 			pairedUsers.set(element['FriendUsername']['S'], true)
 		}

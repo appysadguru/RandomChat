@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import pollDynamoDBMessages from '../Helper/pollDynamoDBMessages';
 import ChatBody from './ChatBody';
 
-async function postMessage(partitionKey, sortKey, msg, sender) {
+async function postMessage(partitionKey,sortKey,msg,sender,friend) {
     try {
         const payLoad = {"UserIDs": partitionKey,"TimestampMilliseconds": sortKey.toString(),"Message": msg,"Sender": sender}
 
@@ -15,7 +15,9 @@ async function postMessage(partitionKey, sortKey, msg, sender) {
         }
         const response = await fetch('https://ay37sppvjd.execute-api.us-east-2.amazonaws.com/test/', options);
     } catch (error) {
+        console.log('inside postMessage fn');
         console.error(error);
+        alert(`Issue detected while sending the message - ${msg} to ${friend}`)
     }
 }
 
@@ -29,6 +31,7 @@ async function postFriendUsername(currentUser,friend) {
         }
         const response = await fetch('https://4v8f48kd37.execute-api.us-east-2.amazonaws.com/test/', options);
     } catch (error) {
+        console.log('inside postFriendUsername fn');
         console.error(error);
     }
 }
@@ -65,22 +68,22 @@ const Chat = props => {
         if (timerId.current === 0) {
             postFriendUsername(currentUser,friend);
             timerId.current = pollDynamoDBMessages(partitionKey, loadMessages, setlastMsgTimestamp);
-            console.log(currentUser+' is sending the first msg to '+friend+' - started polling the Messages table');
+            console.log(currentUser+' is sending the first msg to '+friend+' - started polling the DynamoDB Messages table');
         }
 
         if (time % 2 !== remainder) { time = time + 1; }
-        postMessage(partitionKey,time,inputText,currentUser);
+        postMessage(partitionKey,time,inputText,currentUser,friend);
     }
 
     if (newlyAdded === true && timerId.current === 0) {
         timerId.current = pollDynamoDBMessages(partitionKey, loadMessages, setlastMsgTimestamp);
-        console.log('Detected the first msg from '+friend+' - started polling the Messages table');
+        console.log('Detected the first msg from '+friend+' - started polling the DynamoDB Messages table');
     }
 
     if (isOnline === false && timerId.current !== 0 && timerId.current !== -1) {
         clearTimeout(timerId.current);
         timerId.current = -1;
-        console.log(friend+ ' has gone offline - stopped polling the Messages table');
+        console.log(friend+ ' has gone offline - stopped polling the DynamoDB Messages table');
     }
 
       
@@ -91,8 +94,8 @@ const Chat = props => {
             </Card.Body>
             <Card.Footer>
                 <form onSubmit={onSubmit}>
-                    <input required type="text" placeholder="Enter message" ref={refInput}></input>
-                    <Button type='submit' variant='info'>send</Button>
+                    <input required type="text" placeholder="Enter message" ref={refInput} ></input>
+                    <Button type='submit' variant='info' disabled={isOnline ? "" : "disabled"} >send</Button>
                 </form>
             </Card.Footer>
         </Card>

@@ -8,13 +8,27 @@ const ChatBody = props => {
     let lastFriendMsgTimestamp = props.lastFriendMsgTimestamp;
     const setlastFriendMsgTimestamp = props.setlastFriendMsgTimestamp;
     let tempTimestamp = lastFriendMsgTimestamp;
+    let flag = false;
+
+    const styleSettings = {
+        'maxHeight':'300px',
+        'overflow': 'scroll',  
+        'display':'flex',
+        'flexDirection':'column-reverse'
+    }
 
     const arrayMessages = props.messages.map( obj => {
         
+        let alignment;
+
         if (obj['Sender']['S'] !== currentUser) {
-            tempTimestamp = obj['TimestampMilliseconds']['N'];
+            alignment = 'text-end';
+            if (flag === false){
+                tempTimestamp = obj['TimestampMilliseconds']['N'];
+                flag = true;
+            }
         }
-        return <ListGroup.Item key={obj['TimestampMilliseconds']['N']} > {obj['Message']['S']}</ListGroup.Item>
+        return <ListGroup.Item key={obj['TimestampMilliseconds']['N']} className={alignment}> {obj['Message']['S']}</ListGroup.Item>
     })
 
     useEffect(() => {
@@ -24,7 +38,8 @@ const ChatBody = props => {
         }
     });
     
-    return <ListGroup>{arrayMessages}</ListGroup>;
+    return <ListGroup style={{...styleSettings}} >{arrayMessages}</ListGroup>;
+    
 }
 
 export default ChatBody;

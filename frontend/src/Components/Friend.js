@@ -20,6 +20,7 @@ const Friend = props => {
     
     const timeSinceLastUpdate = new Date() - data['UserLastModifiedDate'];
     const isOnline = (timeSinceLastUpdate > 90000) ? false : true;
+    const alignment = {float: 'right'};
     
     if (accordionItem.current) {
         const isExpanded = accordionItem.current.querySelector('button').getAttribute('aria-expanded');
@@ -36,7 +37,7 @@ const Friend = props => {
             <Accordion.Header>
                 {friend} 
                 <FontAwesomeIcon icon={faEnvelope} pull="right" color="blue" className={newMsgVisibility} />
-                <FontAwesomeIcon icon={faCircle} pull="right" color={isOnline ? '#2ECC71' : '#ABB2B9'} />
+                <FontAwesomeIcon icon={faCircle} color={isOnline ? '#2ECC71' : '#ABB2B9'} style={alignment} />
             </Accordion.Header>
             <Accordion.Body>
                 <Chat isOnline={isOnline} partitionKey={partitionKey.current} remainder={remainder.current} newlyAdded={props.newlyAdded} currentUser={currentUser} friend={friend} newMessage={newMessage} />

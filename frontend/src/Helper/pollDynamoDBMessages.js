@@ -9,7 +9,7 @@ function pollDynamoDBMessages(partitionKey, loadMessages, setlastMsgTimestamp) {
             
             loadMessages(data);
             if (data.length > 0){
-                setlastMsgTimestamp(data[data.length - 1]['TimestampMilliseconds']['N']);
+                setlastMsgTimestamp(data[0]['TimestampMilliseconds']['N']);
             }
         } catch (error) {
             console.error(error);

@@ -37,7 +37,7 @@ function FullScreenModal(props){
 				
 				user.authenticateUser(authDetails, {
 					onSuccess: data => {
-						console.log('successfully logged in. about to start updating an attribute to keep myself online');
+						console.log('successfully logged in. about to start updating a Cognito Userpool attribute to keep myself online');
 
 						props.setCurrentUser(username);
                         pollCognitoUsers(props.mapUsers, props.setmapUsers, username);
@@ -79,7 +79,7 @@ function FullScreenModal(props){
                 <form onSubmit={onSubmit}>
                     <Modal.Body>
                             <label htmlFor='username'>Username</label>
-                            <input required id='username' minLength='3' maxLength='10'></input>
+                            <input required id='username' pattern="^([a-zA-Z0-9]){3,5}$" title="alphanumeric characters min-length:3 max-length:10"></input>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button type='submit' variant='info'>Create</Button>
