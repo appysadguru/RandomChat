@@ -22,10 +22,10 @@ const Friend = props => {
     const isOnline = (timeSinceLastUpdate > 90000) ? false : true;
     const alignment = {float: 'right'};
     
-    if (accordionItem.current) {
+    const Clicked = event => {
         const isExpanded = accordionItem.current.querySelector('button').getAttribute('aria-expanded');
-        if (isExpanded === 'true' && newMsgVisibility === 'visible') {    setnewMsgVisibility('invisible') }
-    }
+        if (isExpanded === 'false' && newMsgVisibility === 'visible') {    setnewMsgVisibility('invisible') }
+    } 
 
     function newMessage () {
         const isExpanded = accordionItem.current.querySelector('button').getAttribute('aria-expanded');
@@ -34,7 +34,7 @@ const Friend = props => {
         
     return (
         <Accordion.Item eventKey={friend} ref={accordionItem} >
-            <Accordion.Header>
+            <Accordion.Header onClick={Clicked}>
                 {friend} 
                 <FontAwesomeIcon icon={faEnvelope} pull="right" color="blue" className={newMsgVisibility} />
                 <FontAwesomeIcon icon={faCircle} color={isOnline ? '#2ECC71' : '#ABB2B9'} style={alignment} />
