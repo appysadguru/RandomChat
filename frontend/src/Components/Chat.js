@@ -4,13 +4,13 @@ import { useState, useRef } from 'react';
 import pollDynamoDBMessages from '../Helper/pollDynamoDBMessages';
 import ChatBody from './ChatBody';
 
-async function postMessage(partitionKey,sortKey,msg,sender,friend) {
+async function postMessage(partitionKey,sortKey,msg,sender,friend,IdToken) {
     try {
         const payLoad = {"UserIDs": partitionKey,"TimestampMilliseconds": sortKey.toString(),"Message": msg,"Sender": sender}
 
         const options = {
             method: 'POST',
-            headers: {'Content-Type': 'application/json;charset=utf-8'},
+            headers: {'Content-Type': 'application/json;charset=utf-8','Authorization': IdToken},
             body: JSON.stringify(payLoad)
         }
         const response = await fetch('https://ay37sppvjd.execute-api.us-east-2.amazonaws.com/test/', options);
@@ -21,12 +21,12 @@ async function postMessage(partitionKey,sortKey,msg,sender,friend) {
     }
 }
 
-async function postFriendUsername(currentUser,friend) {
+async function postFriendUsername(currentUser,friend,IdToken) {
     try {
         const msg = {'Username': friend,'FriendUsername': currentUser}
         const options = {
             method: 'POST',
-            headers: {'Content-Type': 'application/json;charset=utf-8'},
+            headers: {'Content-Type': 'application/json;charset=utf-8','Authorization': IdToken},
             body: JSON.stringify(msg)
         }
         const response = await fetch('https://4v8f48kd37.execute-api.us-east-2.amazonaws.com/test/', options);
@@ -40,6 +40,7 @@ const Chat = props => {
 
     const partitionKey = props.partitionKey;
     const currentUser = props.currentUser;
+    const IdToken = props.IdToken;
     const friend = props.friend;
     const remainder = props.remainder;
     const newlyAdded = props.newlyAdded;
@@ -66,17 +67,17 @@ const Chat = props => {
 
         let time =  Date.now();
         if (timerId.current === 0) {
-            postFriendUsername(currentUser,friend);
-            timerId.current = pollDynamoDBMessages(partitionKey, loadMessages, setlastMsgTimestamp);
+            postFriendUsername(currentUser,friend,IdToken);
+            timerId.current = pollDynamoDBMessages(partitionKey, loadMessages, setlastMsgTimestamp, IdToken);
             console.log(currentUser+' is sending the first msg to '+friend+' - started polling the DynamoDB Messages table');
         }
 
         if (time % 2 !== remainder) { time = time + 1; }
-        postMessage(partitionKey,time,inputText,currentUser,friend);
+        postMessage(partitionKey,time,inputText,currentUser,friend,IdToken);
     }
 
     if (newlyAdded === true && timerId.current === 0) {
-        timerId.current = pollDynamoDBMessages(partitionKey, loadMessages, setlastMsgTimestamp);
+        timerId.current = pollDynamoDBMessages(partitionKey, loadMessages, setlastMsgTimestamp, IdToken);
         console.log('Detected the first msg from '+friend+' - started polling the DynamoDB Messages table');
     }
 
@@ -90,7 +91,7 @@ const Chat = props => {
     return (
         <Card>
             <Card.Body>
-                <ChatBody messages={messages.current} lastFriendMsgTimestamp={lastFriendMsgTimestamp.current} setlastFriendMsgTimestamp={setlastFriendMsgTimestamp} currentUser={currentUser} newMessage={props.newMessage} />
+                <ChatBody messages={messages.current} lastFriendMsgTimestamp={lastFriendMsgTimestamp.current} setlastFriendMsgTimestamp={setlastFriendMsgTimestamp} currentUser={currentUser} IdToken={IdToken} newMessage={props.newMessage} />
             </Card.Body>
             <Card.Footer>
                 <form onSubmit={onSubmit}>

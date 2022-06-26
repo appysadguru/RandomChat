@@ -9,6 +9,7 @@ import { faEnvelope, faCircle } from '@fortawesome/free-solid-svg-icons';
 const Friend = props => {
 
     const currentUser = props.currentUser;
+    const IdToken = props.IdToken;
     const friend = props.friend;
     const data = props.data;
 
@@ -40,7 +41,7 @@ const Friend = props => {
                 <FontAwesomeIcon icon={faCircle} color={isOnline ? '#2ECC71' : '#ABB2B9'} style={alignment} />
             </Accordion.Header>
             <Accordion.Body>
-                <Chat isOnline={isOnline} partitionKey={partitionKey.current} remainder={remainder.current} newlyAdded={props.newlyAdded} currentUser={currentUser} friend={friend} newMessage={newMessage} />
+                <Chat isOnline={isOnline} partitionKey={partitionKey.current} remainder={remainder.current} newlyAdded={props.newlyAdded} currentUser={currentUser} IdToken={IdToken} friend={friend} newMessage={newMessage} />
             </Accordion.Body>
         </Accordion.Item>
 	)

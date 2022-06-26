@@ -7,17 +7,19 @@ function App() {
 
 	const [mapUsers, setmapUsers] = useState(new Map());
 	const currentUser =  useRef();
+	const IdToken =  useRef();
 
 	const setCurrentUser = value => {
-		currentUser.current = value;
+		currentUser.current = value['user'];
+		IdToken.current = value['IdToken'];
 	}
 
 	return (
 		<div className="container">
 			<h1>{currentUser.current}</h1>
 			<br />
-			<FullScreenModal setmapUsers={setmapUsers} mapUsers={mapUsers} setCurrentUser={setCurrentUser}/>
-			<CustomAccordion mapUsers={mapUsers} currentUser={currentUser.current}/>
+			<FullScreenModal setmapUsers={setmapUsers} mapUsers={mapUsers} setCurrentUser={setCurrentUser} />
+			<CustomAccordion mapUsers={mapUsers} currentUser={currentUser.current} IdToken={IdToken.current} />
 		</div>
 	)
 }

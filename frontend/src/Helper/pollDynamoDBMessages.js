@@ -1,10 +1,14 @@
 
 
-function pollDynamoDBMessages(partitionKey, loadMessages, setlastMsgTimestamp) {
+function pollDynamoDBMessages(partitionKey, loadMessages, setlastMsgTimestamp, IdToken) {
 
     async function getMessages() {
         try {
-            const response = await fetch('https://ay37sppvjd.execute-api.us-east-2.amazonaws.com/test/?UserIDs='+partitionKey);
+            const options = {
+                method: 'GET',
+                headers: {'Authorization': IdToken},
+            }
+            const response = await fetch('https://ay37sppvjd.execute-api.us-east-2.amazonaws.com/test/?UserIDs='+partitionKey, options);
             const data = await response.json();
             
             loadMessages(data);
