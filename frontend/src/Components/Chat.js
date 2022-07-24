@@ -1,5 +1,6 @@
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 import { useState, useRef } from 'react';
 import pollDynamoDBMessages from '../Helper/pollDynamoDBMessages';
 import ChatBody from './ChatBody';
@@ -94,10 +95,18 @@ const Chat = props => {
                 <ChatBody messages={messages.current} lastFriendMsgTimestamp={lastFriendMsgTimestamp.current} setlastFriendMsgTimestamp={setlastFriendMsgTimestamp} currentUser={currentUser} IdToken={IdToken} newMessage={props.newMessage} />
             </Card.Body>
             <Card.Footer>
-                <form onSubmit={onSubmit}>
+                {/* <form onSubmit={onSubmit}>
                     <input required type="text" placeholder="Enter message" ref={refInput} ></input>
                     <Button type='submit' variant='info' disabled={isOnline ? "" : "disabled"} >send</Button>
-                </form>
+                </form> */}
+                    <Form onSubmit={onSubmit}>
+                        <Form.Group className='form-control-plaintext'>
+                            <Form.Control required type="text" placeholder="Enter message" ref={refInput} />
+                            {/* <Form.Text className="text-muted"></Form.Text> */}
+                        </Form.Group>
+                        
+                        <Button type='submit' variant='info' disabled={isOnline ? "" : "disabled"} >send</Button>
+                    </Form>
             </Card.Footer>
         </Card>
 	)
