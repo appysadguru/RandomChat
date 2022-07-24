@@ -71,22 +71,22 @@ function FullScreenModal(props){
 	}
 
 	return (
-        <>
-            <Modal show={show} backdrop='static' keyboard={false} size='lg' centered>
-                <Modal.Header>
-                    <Modal.Title>Create User</Modal.Title>
-                </Modal.Header>
-                <form onSubmit={onSubmit}>
-                    <Modal.Body>
-                            <label htmlFor='username'>Username</label>
-                            <input required id='username' pattern="^([a-zA-Z0-9]){3,10}$" title="alphanumeric characters min-length:3 max-length:10"></input>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button type='submit' variant='info'>Create</Button>
-                    </Modal.Footer>
-                </form>
-            </Modal>
-        </>
+        
+		<Modal show={show} backdrop='static' keyboard={false} size='lg' centered>
+			<Modal.Header>
+				<Modal.Title>Create User</Modal.Title>
+			</Modal.Header>
+			<form onSubmit={onSubmit}>
+				<Modal.Body>
+						<label htmlFor='username'>Username</label>
+						<input required id='username' pattern="^([a-zA-Z0-9]){3,10}$" title="alphanumeric characters min-length:3 max-length:10"></input>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button type='submit' variant='info'>Create</Button>
+				</Modal.Footer>
+			</form>
+		</Modal>
+        
     )
 }
 
