@@ -46,7 +46,7 @@ function FullScreenModal(props){
 						setInterval(() => {
 
 							const attributes = [
-								new CognitoUserAttribute({ Name: "custom:lastseen2", Value: 'test' }),
+								new CognitoUserAttribute({ Name: "custom:lastseen", Value: 'test' }),
 							];
 						
 							user.updateAttributes(attributes, (err, result) => {

@@ -13,7 +13,7 @@ async function postMessage(partitionKey,sortKey,msg,sender,friend,IdToken) {
             headers: {'Content-Type': 'application/json;charset=utf-8','Authorization': IdToken},
             body: JSON.stringify(payLoad)
         }
-        const response = await fetch('https://ay37sppvjd.execute-api.us-east-2.amazonaws.com/test/', options);
+        const response = await fetch('https://hxhzkavpik.execute-api.us-east-2.amazonaws.com/dev/', options);
     } catch (error) {
         console.log('inside postMessage fn');
         console.error(error);
@@ -29,7 +29,7 @@ async function postFriendUsername(currentUser,friend,IdToken) {
             headers: {'Content-Type': 'application/json;charset=utf-8','Authorization': IdToken},
             body: JSON.stringify(msg)
         }
-        const response = await fetch('https://4v8f48kd37.execute-api.us-east-2.amazonaws.com/test/', options);
+        const response = await fetch('https://a6dh7pskhi.execute-api.us-east-2.amazonaws.com/dev/', options);
     } catch (error) {
         console.log('inside postFriendUsername fn');
         console.error(error);
@@ -69,7 +69,7 @@ const Chat = props => {
         if (timerId.current === 0) {
             postFriendUsername(currentUser,friend,IdToken);
             timerId.current = pollDynamoDBMessages(partitionKey, loadMessages, setlastMsgTimestamp, IdToken);
-            console.log(currentUser+' is sending the first msg to '+friend+' - started polling the DynamoDB Messages table');
+            console.log(currentUser+' is sending the first msg to '+friend+' - started polling the DynamoDB RandomChat-Messages table');
         }
 
         if (time % 2 !== remainder) { time = time + 1; }
@@ -78,13 +78,13 @@ const Chat = props => {
 
     if (newlyAdded === true && timerId.current === 0) {
         timerId.current = pollDynamoDBMessages(partitionKey, loadMessages, setlastMsgTimestamp, IdToken);
-        console.log('Detected the first msg from '+friend+' - started polling the DynamoDB Messages table');
+        console.log('Detected the first msg from '+friend+' - started polling the DynamoDB RandomChat-Messages table');
     }
 
     if (isOnline === false && timerId.current !== 0 && timerId.current !== -1) {
         clearTimeout(timerId.current);
         timerId.current = -1;
-        console.log(friend+ ' has gone offline - stopped polling the DynamoDB Messages table');
+        console.log(friend+ ' has gone offline - stopped polling the DynamoDB RandomChat-Messages table');
     }
 
       

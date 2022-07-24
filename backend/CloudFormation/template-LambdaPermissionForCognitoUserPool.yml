@@ -1,0 +1,11 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  LambdaPermissionForCognitoUserPool:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !ImportValue RandomChatCognitoUserPoolPreSignup
+      Action: lambda:InvokeFunction
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !ImportValue RandomChatCognitoUserPoolUserARN

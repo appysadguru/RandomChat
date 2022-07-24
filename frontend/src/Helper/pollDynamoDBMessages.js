@@ -8,7 +8,7 @@ function pollDynamoDBMessages(partitionKey, loadMessages, setlastMsgTimestamp, I
                 method: 'GET',
                 headers: {'Authorization': IdToken},
             }
-            const response = await fetch('https://ay37sppvjd.execute-api.us-east-2.amazonaws.com/test/?UserIDs='+partitionKey, options);
+            const response = await fetch('https://hxhzkavpik.execute-api.us-east-2.amazonaws.com/dev/?UserIDs='+partitionKey, options);
             const data = await response.json();
             
             loadMessages(data);
