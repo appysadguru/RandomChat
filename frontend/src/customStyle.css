@@ -1,0 +1,10 @@
+
+.imageCSS {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    align: bottom;
+    position: fixed;
+    bottom: 0px;
+    left: 40%
+  }

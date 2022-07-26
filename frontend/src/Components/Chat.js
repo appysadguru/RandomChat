@@ -92,21 +92,15 @@ const Chat = props => {
     return (
         <Card>
             <Card.Body>
-                <ChatBody messages={messages.current} lastFriendMsgTimestamp={lastFriendMsgTimestamp.current} setlastFriendMsgTimestamp={setlastFriendMsgTimestamp} currentUser={currentUser} IdToken={IdToken} newMessage={props.newMessage} />
+                <ChatBody messages={messages.current} lastFriendMsgTimestamp={lastFriendMsgTimestamp.current} setlastFriendMsgTimestamp={setlastFriendMsgTimestamp} currentUser={currentUser} newMessage={props.newMessage} />
             </Card.Body>
             <Card.Footer>
-                {/* <form onSubmit={onSubmit}>
-                    <input required type="text" placeholder="Enter message" ref={refInput} ></input>
+                <Form onSubmit={onSubmit}>
+                    <Form.Group className='form-control-plaintext'>
+                        <Form.Control required type="text" placeholder="Enter message" ref={refInput} />
+                    </Form.Group>
                     <Button type='submit' variant='info' disabled={isOnline ? "" : "disabled"} >send</Button>
-                </form> */}
-                    <Form onSubmit={onSubmit}>
-                        <Form.Group className='form-control-plaintext'>
-                            <Form.Control required type="text" placeholder="Enter message" ref={refInput} />
-                            {/* <Form.Text className="text-muted"></Form.Text> */}
-                        </Form.Group>
-                        
-                        <Button type='submit' variant='info' disabled={isOnline ? "" : "disabled"} >send</Button>
-                    </Form>
+                </Form>
             </Card.Footer>
         </Card>
 	)
