@@ -35,7 +35,7 @@ function App() {
 			</Card>
 			
 			<a href="https://consciousplanet.org/" target="_blank" rel="noopener noreferrer" title="Global movement to save soil from extinction">
-				<Image src={'https://randomchatcloudformationbucket.s3.us-east-2.amazonaws.com/SaveSoil1.jpg'} className="imageCSS" />
+				<Image src={'https://randomchatbucket.s3.us-east-2.amazonaws.com/SaveSoil.png'} className="imageCSS" />
 			</a>
 		</>
 	)
