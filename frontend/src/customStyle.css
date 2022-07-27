@@ -4,7 +4,7 @@
     max-width: 100px;
     height: auto;
     align: bottom;
-    position: fixed;
-    bottom: 0px;
-    left: 93%
+    position: relative;
+    bottom: -525px;
+    left: 47%
   }
