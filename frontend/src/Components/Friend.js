@@ -35,10 +35,11 @@ const Friend = props => {
         
     return (
         <Accordion.Item eventKey={friend} ref={accordionItem} >
-            <Accordion.Header onClick={Clicked}>
+            <Accordion.Header onClick={Clicked} className='text-right'>
                 {friend} 
-                <FontAwesomeIcon icon={faEnvelope} pull="right" color="blue" className={newMsgVisibility} />
-                <FontAwesomeIcon icon={faCircle} color={isOnline ? '#2ECC71' : '#ABB2B9'} style={alignment} />
+                <div className='customSpace' ></div>
+                <FontAwesomeIcon icon={faEnvelope} color="blue" className={newMsgVisibility} />
+                <FontAwesomeIcon icon={faCircle} color={isOnline ? '#2ECC71' : '#ABB2B9'} style={alignment}  className='mx-5' />
             </Accordion.Header>
             <Accordion.Body>
                 <Chat isOnline={isOnline} partitionKey={partitionKey.current} remainder={remainder.current} newlyAdded={props.newlyAdded} currentUser={currentUser} IdToken={IdToken} friend={friend} newMessage={newMessage} />

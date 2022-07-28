@@ -25,9 +25,9 @@ function App() {
 				<Card.Header className="card text-center"><h1>RandomChat</h1></Card.Header>
 				<Card.Body>
 					<Card.Title><h3>{currentUser.current}</h3></Card.Title>
+					<br />
 					<h6>Users:</h6>
 					<div className="container">
-						
 						<br />
 						<FullScreenModal setmapUsers={setmapUsers} mapUsers={mapUsers} setCurrentUser={setCurrentUser} />
 						<CustomAccordion mapUsers={mapUsers} currentUser={currentUser.current} IdToken={IdToken.current} />

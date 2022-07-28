@@ -8,3 +8,8 @@
     bottom: -525px;
     left: 47%
   }
+
+  .customSpace {
+    width: 100%;
+    height: auto
+  }
