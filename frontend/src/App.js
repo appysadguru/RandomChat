@@ -1,23 +1,28 @@
 import React, {useState, useRef} from 'react';
-import FullScreenModal from './Components/FullScreenModal';
-import CustomAccordion from './Components/CustomAccordion';
 import Card from 'react-bootstrap/Card';
 import Image from 'react-bootstrap/Image';
-import './customStyle.css';
+import CustomAccordion from './Components/CustomAccordion';
+import FullScreenModal from './Components/FullScreenModal';
+import './CustomStyle.css';
 
 	
 function App() {
 
-	const [mapUsers, setmapUsers] = useState(new Map());
-	const currentUser =  useRef();
-	const IdToken =  useRef();
+	const [mapUsers, setmapUsers] = useState(new Map());	// State Variable - map object mapping usernames(string) of friends to Cognito data(object)
+	const currentUser =  useRef();	// current user's username(string)
+	const IdToken =  useRef();	// Cognito idToken(string)
+	const currentUserData =  useRef();	// current user's Cognito data(object)
 
+	// called by FullScreenModal component
 	const setCurrentUser = value => {
 		currentUser.current = value['user'];
 		IdToken.current = value['IdToken'];
 	}
 
-
+	// called by pollCognitoUsers function
+	const setCurrentUserData = value => {
+		currentUserData.current = value;
+	}
 
 	return (
 		<>
@@ -29,14 +34,14 @@ function App() {
 					<h6>Users:</h6>
 					<div className="container">
 						<br />
-						<FullScreenModal setmapUsers={setmapUsers} mapUsers={mapUsers} setCurrentUser={setCurrentUser} />
-						<CustomAccordion mapUsers={mapUsers} currentUser={currentUser.current} IdToken={IdToken.current} />
+						<FullScreenModal setmapUsers={setmapUsers} mapUsers={mapUsers} setCurrentUser={setCurrentUser} setCurrentUserData={setCurrentUserData} />
+						<CustomAccordion mapUsers={mapUsers} currentUser={currentUser.current} IdToken={IdToken.current} currentUserData={currentUserData.current} />
 					</div>
 				</Card.Body>
 			</Card>
 			
 			<a href="https://consciousplanet.org/" target="_blank" rel="noopener noreferrer" title="Global movement to save soil from extinction">
-				<Image src={'https://randomchatbucket.s3.us-east-2.amazonaws.com/SaveSoil.png'} className="imageCSS" />
+				<Image src={'https://randomchatbucket.s3.us-east-2.amazonaws.com/SaveSoil.png'} className="image-css" />
 			</a>
 		</>
 	)

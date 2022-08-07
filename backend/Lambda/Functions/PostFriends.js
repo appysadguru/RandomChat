@@ -1,7 +1,7 @@
 const { DynamoDBClient, PutItemCommand } = require("@aws-sdk/client-dynamodb");
 const ddbClient = new DynamoDBClient({ region: "us-east-2" });
 
-// 23rd July version 4
+
 
 function responseData(responseCode, responseBody) {
 
@@ -17,10 +17,11 @@ function responseData(responseCode, responseBody) {
     };
 }
 
+// creates a user(provided as FriendUsername) as a sort key of another user(provided as Username) in the DynamoDB 'RandomChat-Friends' table
 exports.handler = async (event) => {
     
     try {
-        const payload = JSON.parse(event['body']);
+        const payload = JSON.parse(event['body']);  // data sent by the front-end
         
         const partitionKey = payload['Username'];
         const sortKey = payload['FriendUsername'];
@@ -34,7 +35,6 @@ exports.handler = async (event) => {
         };
 
         const data = await ddbClient.send(new PutItemCommand(params));
-        console.log('test'); // testing
         return responseData(data['$metadata']['httpStatusCode'], '');
         
     } catch (err) {

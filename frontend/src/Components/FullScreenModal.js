@@ -1,18 +1,21 @@
-import Modal from 'react-bootstrap/Modal';
+import { useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
-import { useState } from 'react';
+import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
 import { CognitoUser, AuthenticationDetails, CognitoUserAttribute } from 'amazon-cognito-identity-js';
 import {pollCognitoUsers} from '../Helper/pollCognitoUsers';
 import UserPool from '../Helper/userPool';
 
-function FullScreenModal(props){
-    const [show, setShow] = useState(true);
+// component to signup and login the current user and to keep the user online
+function FullScreenModal(props) {
+    const [show, setShow] = useState(true);		// State Variable - whether to show the modal or not(boolean)
+	const refInput =  useRef();		// holds the username(string)
 
     const onSubmit = event => {
         event.preventDefault();
         
-        const username = document.getElementById('username').value;
-		const password = 'dumMy@6';
+        let username = refInput.current.value;
+		const password = 'dumMy@6';		// using the same dummy password for every user(so that we don't have to ask the user to enter password)
 
 		UserPool.signUp(username, password, [], null, (err, data) => {
 			if (err) {
@@ -21,7 +24,7 @@ function FullScreenModal(props){
                 alert(err.message);
 			}
 			else {
-				// code for login
+				// code to login
 
 				console.log('Successfully signed up. About to login');
 					
@@ -37,12 +40,18 @@ function FullScreenModal(props){
 				
 				user.authenticateUser(authDetails, {
 					onSuccess: data => {
-						console.log('Successfully logged in. About to start updating a Cognito Userpool attribute to keep myself online');
+						console.log('Successfully logged in. About to start updating a Cognito Userpool attribute to stay online');
 
+						// send the username, idToken,.. to App.js to use them further
 						props.setCurrentUser({'user': username, 'IdToken': data['idToken']['jwtToken']});
-                        pollCognitoUsers(props.mapUsers, props.setmapUsers, username);
-                        setShow(false);
 
+						// send the details to start polling the Cognito database
+                        pollCognitoUsers(props.mapUsers, props.setmapUsers, username, props.setCurrentUserData);
+
+						// now that the user is created, close the Modal
+                        setShow(false); 
+
+						// every two seconds, keep updating an attribute to stay online
 						setInterval(() => {
 
 							const attributes = [
@@ -71,22 +80,28 @@ function FullScreenModal(props){
 	}
 
 	return (
-        
-		<Modal show={show} backdrop='static' keyboard={false} size='lg' centered>
-			<Modal.Header>
-				<Modal.Title>Create User</Modal.Title>
+        <Modal show={show} backdrop='static' keyboard={false} size='lg' centered>
+			<Modal.Header className='pb-0'>
+				<ul className="list-group list-group-flush">
+					<li className="list-group-item"><span className="fw-bold">RandomChat</span> lets you chat with random users</li>
+					<li className="list-group-item">Enter a username and click on 'Create'<br/>
+						Green dot represents online users. Gray dot represents offline users<br/>
+						Blue message icon represents new messages<br/>
+						Click on a random user and start chatting<br/>
+					</li>
+				</ul>
 			</Modal.Header>
-			<form onSubmit={onSubmit}>
-				<Modal.Body>
-						<label htmlFor='username'>Username</label>
-						<input required id='username' pattern="^([a-zA-Z0-9]){3,10}$" title="alphanumeric characters min-length:3 max-length:10"></input>
+			<Form onSubmit={onSubmit}>
+				<Modal.Body className='pt-0'>
+						<Form.Group className='form-control-plaintext'>
+							<Form.Label className='me-2'>Username</Form.Label>
+							<Form.Control type="text" required pattern="^([a-zA-Z0-9]){3,10}$" ref={refInput} />
+							<Form.Text className="text-muted">Alphanumeric 3-10 characters long</Form.Text>
+						</Form.Group>
+						<Button type='submit' variant='info' className='float-end mb-2'>Create</Button>
 				</Modal.Body>
-				<Modal.Footer>
-					<Button type='submit' variant='info'>Create</Button>
-				</Modal.Footer>
-			</form>
+			</Form>
 		</Modal>
-        
     )
 }
 

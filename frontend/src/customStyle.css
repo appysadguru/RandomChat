@@ -1,5 +1,5 @@
 
-.imageCSS {
+.image-css {
     width: 100%;
     max-width: 100px;
     height: auto;
@@ -9,7 +9,14 @@
     left: 47%
   }
 
-  .customSpace {
-    width: 100%;
-    height: auto
-  }
+.custom-space {
+  width: 100%;
+  height: auto
+}
+
+.style-messages {
+    max-height: 300px;
+    overflow: scroll;
+    flex-direction: column-reverse !important;
+    display: flex;
+}

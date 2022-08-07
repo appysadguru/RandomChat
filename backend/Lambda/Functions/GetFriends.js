@@ -1,7 +1,7 @@
 const { DynamoDBClient, QueryCommand } = require("@aws-sdk/client-dynamodb");
 const ddbClient = new DynamoDBClient({ region: "us-east-2" });
 
-// 23rd July version 4
+
 
 function responseData(responseCode, responseBody) {
 
@@ -17,6 +17,7 @@ function responseData(responseCode, responseBody) {
     };
 }
 
+// gets paired users(sort keys) of a user(partition key) from the DynamoDB 'RandomChat-Friends' table
 exports.handler = async (event) => {
     
     try {
@@ -24,6 +25,7 @@ exports.handler = async (event) => {
 
         const partitionKey = event["queryStringParameters"]['Username'];
 
+        // pagination
         do {
             params = {
                 'TableName': "RandomChat-Friends",

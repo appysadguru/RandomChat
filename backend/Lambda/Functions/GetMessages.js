@@ -1,7 +1,7 @@
 const { DynamoDBClient, QueryCommand } = require("@aws-sdk/client-dynamodb");
 const ddbClient = new DynamoDBClient({ region: "us-east-2" });
 
-// 23rd July version 4
+
 
 function responseData(responseCode, responseBody) {
 
@@ -17,14 +17,16 @@ function responseData(responseCode, responseBody) {
     };
 }
 
+// gets msgs from the DynamoDB 'RandomChat-Messages' table
 exports.handler = async (event) => {
     
     try {
         let data, params, paginateToken = null, finalData = [];
 
-        const partitionKey = event["queryStringParameters"]['UserIDs'];
-        const timestampMinusFiveMins = (Date.now() - 300000).toString();
+        const partitionKey = event["queryStringParameters"]['UserIDs'];  // query string parameters sent by the front-end
+        const timestampMinusFiveMins = (Date.now() - 300000).toString();    // to retrieve only those msgs for which the TimestampMilliseconds(sort key) value is within the last 5 minutes
         
+        // pagination
         do {
             params = {
                 'TableName': "RandomChat-Messages",
@@ -35,7 +37,7 @@ exports.handler = async (event) => {
                 'ExclusiveStartKey': paginateToken
             };
             
-            data = await ddbClient.send(new QueryCommand(params));
+            data = await ddbClient.send(new QueryCommand(params));      // gets items from the table
             
             paginateToken = data['LastEvaluatedKey'];
 

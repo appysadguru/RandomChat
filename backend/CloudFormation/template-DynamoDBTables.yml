@@ -1,3 +1,5 @@
+# yet to add comments
+
 AWSTemplateFormatVersion: "2010-09-09"
 Resources: 
   DynamoDBMessagesTable: 

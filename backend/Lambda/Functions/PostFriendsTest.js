@@ -5,6 +5,8 @@ const AWS = require('aws-sdk');
 const codedeploy = new AWS.CodeDeploy();
 var lambda = new AWS.Lambda();
 
+// yet to add comments
+
 
 async function test1(functionToTest){
 
@@ -148,6 +150,7 @@ exports.handler = async (event, context) => {
     
     const result2 = await test2(functionToTest);
     arrayResult.push(result2);
+    
     
     const finalResult = arrayResult.every(element => element === true);
 

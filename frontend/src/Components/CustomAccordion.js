@@ -2,6 +2,8 @@ import { useRef } from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import Friend from './Friend';
 
+// http GET call to the API Gateway to get the users/friends who have paired with the current user(sort keys of the current user from the DynamoDB 
+// 'RandomChat-Friends' table)
 async function getPairedUsers(Username,setPairedUsers,IdToken) {
 	try {
 		const options = {
@@ -23,9 +25,12 @@ async function getPairedUsers(Username,setPairedUsers,IdToken) {
 	}
 }
 
+// component to get the paired users/friends and an array of online users/friends
 const CustomAccordion = props => {
 
 	const currentUser = props.currentUser;
+	const currentUserData = props.currentUserData;
+	
 	const IdToken = props.IdToken;
 	const mapUsers = props.mapUsers;
 
@@ -35,14 +40,31 @@ const CustomAccordion = props => {
 		pairedUsers.current = value;
 	}
 
+	// after the current user is created, get the paired users/friends(users who have sent the first msg)
 	if (currentUser) { getPairedUsers(currentUser, setPairedUsers, IdToken) }
 	
-	const arrayUsernames = Array.from(mapUsers.keys());
-	const boolFalse = false;
+	const arrayUsernames = Array.from(mapUsers.keys());		// array of all the usernames present in the Cognito table
+	const boolFalse = false;	// represents whether a online user/friend has sent the first msg
 
-	const arrayUsers = arrayUsernames.map(username => <Friend key={username} friend={username} currentUser={currentUser} IdToken={IdToken} data={mapUsers.get(username)} newlyAdded={ pairedUsers.current.get(username) || boolFalse } />
-	);
+	const arrayUsers = [];
 
+	if (currentUserData) {
+		const currentUserUserCreateDate = currentUserData['UserCreateDate'];	// get when the current user is created
+		
+		arrayUsernames.forEach((username, index, arr) => {
+
+			// get the last modified datetime of each friend/user
+			const currentFriendLastModifiedDate = mapUsers.get(username)['UserLastModifiedDate'];
+
+			const timeDiff = currentUserUserCreateDate - currentFriendLastModifiedDate;
+
+			// if the time gap between the last modified datetime of a friend and the current user created datetime is more than a minute and a half then 
+			// don't show the user under the list of 'Users'
+			if (timeDiff < 90001)
+				arrayUsers.push(<Friend key={username} friend={username} currentUser={currentUser} IdToken={IdToken} data={mapUsers.get(username)} newlyAdded={ pairedUsers.current.get(username) || boolFalse } />);
+		});
+	}
+	
     return <Accordion>{arrayUsers}</Accordion>
 }
 
