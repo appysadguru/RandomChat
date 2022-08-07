@@ -3,7 +3,7 @@ import Card from 'react-bootstrap/Card';
 import Image from 'react-bootstrap/Image';
 import CustomAccordion from './Components/CustomAccordion';
 import FullScreenModal from './Components/FullScreenModal';
-import './CustomStyle.css';
+import './customStyle.css';
 
 	
 function App() {
