@@ -10,7 +10,7 @@ async function getPairedUsers(Username,setPairedUsers,IdToken) {
 			method: 'GET',
 			headers: {'Authorization': IdToken},
 		}
-		const response = await fetch('https://a6dh7pskhi.execute-api.us-east-2.amazonaws.com/dev/?Username='+Username, options);
+		const response = await fetch('https://yldweyq5ri.execute-api.us-east-2.amazonaws.com/dev/?Username='+Username, options);
 		const data = await response.json();
 	    
 		const pairedUsers = new Map();

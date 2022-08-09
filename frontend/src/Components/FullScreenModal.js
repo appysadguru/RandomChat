@@ -87,7 +87,9 @@ function FullScreenModal(props) {
 					<li className="list-group-item">Enter a username and click on 'Create'<br/>
 						Green dot represents online users. Gray dot represents offline users<br/>
 						Blue message icon represents new messages<br/>
-						Click on a random user and start chatting<br/>
+						Messages of the online users disappear after 5 minutes<br/>
+						Use desktop for best results<br/>
+						Click on a random user and start chatting !<br/>
 					</li>
 				</ul>
 			</Modal.Header>

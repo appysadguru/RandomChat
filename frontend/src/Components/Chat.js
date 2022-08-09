@@ -15,7 +15,7 @@ async function postMessage(partitionKey,sortKey,msg,sender,friend,IdToken) {
             headers: {'Content-Type': 'application/json;charset=utf-8','Authorization': IdToken},
             body: JSON.stringify(payLoad)
         }
-        const response = await fetch('https://hxhzkavpik.execute-api.us-east-2.amazonaws.com/dev/', options);
+        const response = await fetch('https://b5hxugaswd.execute-api.us-east-2.amazonaws.com/dev/', options);
     } catch (error) {
         console.log('inside postMessage fn');
         console.error(error);
@@ -35,7 +35,7 @@ async function postFriendUsername(currentUser,friend,IdToken) {
             headers: {'Content-Type': 'application/json;charset=utf-8','Authorization': IdToken},
             body: JSON.stringify(msg)
         }
-        const response = await fetch('https://a6dh7pskhi.execute-api.us-east-2.amazonaws.com/dev/', options);
+        const response = await fetch('https://yldweyq5ri.execute-api.us-east-2.amazonaws.com/dev/', options);
     } catch (error) {
         console.log('inside postFriendUsername fn');
         console.error(error);
