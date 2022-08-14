@@ -1,0 +1,28 @@
+# yet to add comments
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources: 
+
+  PreSignupLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: RandomChat-Cognito-UserPool-PreSignup
+      Handler: index.handler
+      Runtime: nodejs16.x
+      Description: Confirms Cognito users right after their accounts are created
+      MemorySize: 128
+      Timeout: 3
+      InlineCode: |
+        exports.handler = async (event) => {
+            event.response.autoConfirmUser = true;
+            return event
+        }
+
+Outputs:
+  PreSignupLambdaFunctionOutput:
+    Description: ARN of RandomChat-Cognito-UserPool-PreSignup
+    Value: !GetAtt PreSignupLambdaFunction.Arn
+    Export:
+      Name: RandomChatCognitoUserPoolPreSignup

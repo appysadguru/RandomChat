@@ -1,0 +1,515 @@
+# yet to add comments
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  APIMessages:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: RandomChat-Messages
+      Description: APIs connected to Lambda functions that interact with DynamoDB RandomChat-Messages table
+      StageName: dev
+      Cors:
+        AllowMethods: "'POST, GET'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+      Auth:
+        Authorizers:
+          CognitoAuthorizerMessages:
+            UserPoolArn: !ImportValue RandomChatCognitoUserPoolUserARN
+        DefaultAuthorizer: CognitoAuthorizerMessages
+        AddDefaultAuthorizerToCorsPreflight: false
+      EndpointConfiguration:
+        Type: REGIONAL
+
+  PostMessages:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: PostMessages.handler
+      Runtime: nodejs16.x
+      MemorySize: 128
+      Timeout: 3
+      FunctionName: RandomChat-PostMessages
+      AutoPublishAlias: RandomChatPostMessagesAlias
+      Description: Creates a record in DynamoDB RandomChat-Messages table. Invoked by POST method
+      Layers:
+        - !ImportValue RandomChatAWSSDKv3ClientDynamoDBLayerARN
+      Policies:
+          - Version: "2012-10-17"
+            Statement:
+            - Effect: "Allow"
+              Action:
+                - "dynamodb:BatchGetItem"
+                - "dynamodb:BatchWriteItem"
+                - "dynamodb:ConditionCheckItem"
+                - "dynamodb:PutItem"
+                - "dynamodb:DescribeTable"
+                - "dynamodb:DeleteItem"
+                - "dynamodb:GetItem"
+                - "dynamodb:Scan"
+                - "dynamodb:Query"
+                - "dynamodb:UpdateItem"
+              Resource: '*'
+      CodeUri: ../Lambda/Functions/PostMessages.js
+      DeploymentPreference:
+          Type: AllAtOnce
+          Hooks:
+            PostTraffic: !Ref PostMessagesTest
+      Events:
+        APIMessagesPostEvent:
+          Type: Api
+          Properties:
+            Path: /
+            Method: post
+            RestApiId: 
+              Ref: APIMessages
+
+  PostMessagesTest:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: PostMessagesTest.handler
+      Description: Performs validation tests for RandomChat-PostMessages Lambda function
+      Policies:
+        - Version: "2012-10-17"
+          Statement: 
+          - Effect: "Allow"
+            Action: 
+              - "codedeploy:PutLifecycleEventHookExecutionStatus"
+            Resource:
+              !Sub 'arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:${ServerlessDeploymentApplication}/*'
+        - Version: "2012-10-17"
+          Statement: 
+          - Effect: "Allow"
+            Action: 
+              - "lambda:InvokeFunction"
+            Resource: !Ref PostMessages.Version
+        - Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Action:
+              - "dynamodb:BatchGetItem"
+              - "dynamodb:BatchWriteItem"
+              - "dynamodb:ConditionCheckItem"
+              - "dynamodb:PutItem"
+              - "dynamodb:DescribeTable"
+              - "dynamodb:DeleteItem"
+              - "dynamodb:GetItem"
+              - "dynamodb:Scan"
+              - "dynamodb:Query"
+              - "dynamodb:UpdateItem"
+            Resource: '*'
+      Runtime: nodejs16.x
+      FunctionName: 'CodeDeployHook_PostMessagesTest'
+      CodeUri: ../Lambda/Functions/PostMessagesTest.js
+      Layers:
+        - !ImportValue RandomChatAWSSDKv3ClientDynamoDBLayerARN
+      DeploymentPreference:
+        Enabled: false
+      Environment:
+        Variables:
+          NewVersion: !Ref PostMessages.Version
+
+  GetMessages:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: GetMessages.handler
+      Runtime: nodejs16.x
+      MemorySize: 128
+      Timeout: 3
+      FunctionName: RandomChat-GetMessages
+      AutoPublishAlias: RandomChatGetMessagesAlias
+      Description: Gets the items from DynamoDB RandomChat-Messages table. Invoked by GET method
+      Layers:
+        - !ImportValue RandomChatAWSSDKv3ClientDynamoDBLayerARN
+      Policies:
+          - Version: "2012-10-17"
+            Statement:
+            - Effect: "Allow"
+              Action:
+                - "dynamodb:BatchGetItem"
+                - "dynamodb:BatchWriteItem"
+                - "dynamodb:ConditionCheckItem"
+                - "dynamodb:PutItem"
+                - "dynamodb:DescribeTable"
+                - "dynamodb:DeleteItem"
+                - "dynamodb:GetItem"
+                - "dynamodb:Scan"
+                - "dynamodb:Query"
+                - "dynamodb:UpdateItem"
+              Resource: '*'
+      CodeUri: ../Lambda/Functions/GetMessages.js
+      DeploymentPreference:
+          Type: AllAtOnce
+          Hooks:
+            PostTraffic: !Ref GetMessagesTest
+      Events:
+        APIMessagesGetEvent:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+            RestApiId: 
+              Ref: APIMessages
+  
+  GetMessagesTest:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: GetMessagesTest.handler
+      Description: Performs validation tests for RandomChat-GetMessages Lambda function
+      Policies:
+        - Version: "2012-10-17"
+          Statement: 
+          - Effect: "Allow"
+            Action: 
+              - "codedeploy:PutLifecycleEventHookExecutionStatus"
+            Resource:
+              !Sub 'arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:${ServerlessDeploymentApplication}/*'
+        - Version: "2012-10-17"
+          Statement: 
+          - Effect: "Allow"
+            Action: 
+              - "lambda:InvokeFunction"
+            Resource: !Ref GetMessages.Version
+        - Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Action:
+              - "dynamodb:BatchGetItem"
+              - "dynamodb:BatchWriteItem"
+              - "dynamodb:ConditionCheckItem"
+              - "dynamodb:PutItem"
+              - "dynamodb:DescribeTable"
+              - "dynamodb:DeleteItem"
+              - "dynamodb:GetItem"
+              - "dynamodb:Scan"
+              - "dynamodb:Query"
+              - "dynamodb:UpdateItem"
+            Resource: '*'
+      Runtime: nodejs16.x
+      FunctionName: 'CodeDeployHook_GetMessagesTest'
+      CodeUri: ../Lambda/Functions/GetMessagesTest.js
+      Layers:
+        - !ImportValue RandomChatAWSSDKv3ClientDynamoDBLayerARN
+      DeploymentPreference:
+        Enabled: false
+      Environment:
+        Variables:
+          NewVersion: !Ref GetMessages.Version
+  
+  APIFriends:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: RandomChat-Friends
+      Description: APIs connected to Lambda functions that interact with DynamoDB RandomChat-Friends table
+      StageName: dev
+      Cors:
+        AllowMethods: "'POST, GET'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+      Auth:
+        Authorizers:
+          CognitoAuthorizerFriends:
+            UserPoolArn: !ImportValue RandomChatCognitoUserPoolUserARN
+        DefaultAuthorizer: CognitoAuthorizerFriends
+        AddDefaultAuthorizerToCorsPreflight: false
+      EndpointConfiguration:
+        Type: REGIONAL
+
+  PostFriends:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: PostFriends.handler
+      Description: //
+      Runtime: nodejs16.x
+      MemorySize: 128
+      Timeout: 3
+      FunctionName: RandomChat-PostFriends
+      AutoPublishAlias: RandomChatPostFriendsAlias
+      Description: Creates a record in the DynamoDB RandomChat-Friends table. Invoked by POST method
+      Layers:
+        - !ImportValue RandomChatAWSSDKv3ClientDynamoDBLayerARN
+      Policies:
+          - Version: "2012-10-17"
+            Statement:
+            - Effect: "Allow"
+              Action:
+                - "dynamodb:BatchGetItem"
+                - "dynamodb:BatchWriteItem"
+                - "dynamodb:ConditionCheckItem"
+                - "dynamodb:PutItem"
+                - "dynamodb:DescribeTable"
+                - "dynamodb:DeleteItem"
+                - "dynamodb:GetItem"
+                - "dynamodb:Scan"
+                - "dynamodb:Query"
+                - "dynamodb:UpdateItem"
+              Resource: '*'
+      CodeUri: ../Lambda/Functions/PostFriends.js
+      DeploymentPreference:
+          Type: AllAtOnce
+          Hooks:
+            PostTraffic: !Ref PostFriendsTest
+      Events:
+        APIFriendsGetEvent:
+          Type: Api
+          Properties:
+            Path: /
+            Method: post
+            RestApiId: 
+              Ref: APIFriends
+  
+  PostFriendsTest:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: PostFriendsTest.handler
+      Description: Performs validation tests for RandomChat-PostFriends Lambda function
+      Policies:
+        - Version: "2012-10-17"
+          Statement: 
+          - Effect: "Allow"
+            Action: 
+              - "codedeploy:PutLifecycleEventHookExecutionStatus"
+            Resource:
+              !Sub 'arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:${ServerlessDeploymentApplication}/*'
+        - Version: "2012-10-17"
+          Statement: 
+          - Effect: "Allow"
+            Action: 
+              - "lambda:InvokeFunction"
+            Resource: !Ref PostFriends.Version
+        - Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Action:
+              - "dynamodb:BatchGetItem"
+              - "dynamodb:BatchWriteItem"
+              - "dynamodb:ConditionCheckItem"
+              - "dynamodb:PutItem"
+              - "dynamodb:DescribeTable"
+              - "dynamodb:DeleteItem"
+              - "dynamodb:GetItem"
+              - "dynamodb:Scan"
+              - "dynamodb:Query"
+              - "dynamodb:UpdateItem"
+            Resource: '*'
+      Runtime: nodejs16.x
+      FunctionName: 'CodeDeployHook_PostFriendsTest'
+      CodeUri: ../Lambda/Functions/PostFriendsTest.js
+      Layers:
+        - !ImportValue RandomChatAWSSDKv3ClientDynamoDBLayerARN
+      DeploymentPreference:
+        Enabled: false
+      Environment:
+        Variables:
+          NewVersion: !Ref PostFriends.Version
+
+  GetFriends:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: GetFriends.handler
+      Runtime: nodejs16.x
+      MemorySize: 128
+      Timeout: 3
+      FunctionName: RandomChat-GetFriends
+      AutoPublishAlias: RandomChatGetFriendsAlias
+      Description: Gets the items from DynamoDB RandomChat-Friends table. Invoked by GET method
+      Layers:
+        - !ImportValue RandomChatAWSSDKv3ClientDynamoDBLayerARN
+      Policies:
+          - Version: "2012-10-17"
+            Statement:
+            - Effect: "Allow"
+              Action:
+                - "dynamodb:BatchGetItem"
+                - "dynamodb:BatchWriteItem"
+                - "dynamodb:ConditionCheckItem"
+                - "dynamodb:PutItem"
+                - "dynamodb:DescribeTable"
+                - "dynamodb:DeleteItem"
+                - "dynamodb:GetItem"
+                - "dynamodb:Scan"
+                - "dynamodb:Query"
+                - "dynamodb:UpdateItem"
+              Resource: '*'
+      CodeUri: ../Lambda/Functions/GetFriends.js
+      DeploymentPreference:
+          Type: AllAtOnce
+          Hooks:
+            PostTraffic: !Ref GetFriendsTest
+      Events:
+        APIFriendsGetEvent:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+            RestApiId: 
+              Ref: APIFriends
+  
+  GetFriendsTest:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: GetFriendsTest.handler
+      Description: Performs validation tests for RandomChat-GetFriends Lambda function
+      Policies:
+        - Version: "2012-10-17"
+          Statement: 
+          - Effect: "Allow"
+            Action: 
+              - "codedeploy:PutLifecycleEventHookExecutionStatus"
+            Resource:
+              !Sub 'arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:${ServerlessDeploymentApplication}/*'
+        - Version: "2012-10-17"
+          Statement: 
+          - Effect: "Allow"
+            Action: 
+              - "lambda:InvokeFunction"
+            Resource: !Ref GetFriends.Version
+        - Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Action:
+              - "dynamodb:BatchGetItem"
+              - "dynamodb:BatchWriteItem"
+              - "dynamodb:ConditionCheckItem"
+              - "dynamodb:PutItem"
+              - "dynamodb:DescribeTable"
+              - "dynamodb:DeleteItem"
+              - "dynamodb:GetItem"
+              - "dynamodb:Scan"
+              - "dynamodb:Query"
+              - "dynamodb:UpdateItem"
+            Resource: '*'
+      Runtime: nodejs16.x
+      FunctionName: 'CodeDeployHook_GetFriendsTest'
+      CodeUri: ../Lambda/Functions/GetFriendsTest.js
+      Layers:
+        - !ImportValue RandomChatAWSSDKv3ClientDynamoDBLayerARN
+      DeploymentPreference:
+        Enabled: false
+      Environment:
+        Variables:
+          NewVersion: !Ref GetFriends.Version
+
+  APIListCognitoUsers:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: RandomChat-ListCognitoUsers
+      Description: APIs connected to Lambda functions that interact with Cognito Userpool -> RandomChat-User
+      StageName: dev
+      Cors:
+        AllowMethods: "'GET'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+      Auth:
+        Authorizers:
+          CognitoAuthorizerListCognitoUsers:
+            UserPoolArn: !ImportValue RandomChatCognitoUserPoolUserARN
+        DefaultAuthorizer: CognitoAuthorizerListCognitoUsers
+        AddDefaultAuthorizerToCorsPreflight: false
+      EndpointConfiguration:
+        Type: REGIONAL
+
+  GetListCognitoUsers:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: GetListCognitoUsers.handler
+      Runtime: nodejs16.x
+      MemorySize: 128
+      Timeout: 5
+      FunctionName: RandomChat-GetListCognitoUsers
+      AutoPublishAlias: RandomChatGetListCognitoUsersAlias
+      Description: gets a list of users from Cognito Userpool -> RandomChat-User. Invoked by GET method
+      Layers:
+        - !ImportValue RandomChatAWSSDKv3ClientCognitoIdentityProviderLayerARN
+      Policies:
+          - Version: "2012-10-17"
+            Statement:
+            - Effect: "Allow"
+              Action:
+                - "cognito-identity:Describe*"
+                - "cognito-identity:Get*"
+                - "cognito-identity:List*"
+                - "cognito-idp:Describe*"
+                - "cognito-idp:AdminGet*"
+                - "cognito-idp:AdminList*"
+                - "cognito-idp:List*"
+                - "cognito-idp:Get*"
+                - "cognito-sync:Describe*"
+                - "cognito-sync:Get*"
+                - "cognito-sync:List*"
+                - "iam:ListOpenIdConnectProviders"
+                - "iam:ListRoles"
+                - "sns:ListPlatformApplications"
+              Resource: '*'
+      CodeUri: ../Lambda/Functions/GetListCognitoUsers.js
+      DeploymentPreference:
+          Type: AllAtOnce
+      Events:
+        APIListCognitoUsersGetEvent:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+            RestApiId: 
+              Ref: APIListCognitoUsers
+
+  APIUTCTime:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: RandomChat-UTCTime
+      Description: API connected to a Lambda function that returns the UTC epoch time
+      StageName: dev
+      Cors:
+        AllowMethods: "'GET'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+      EndpointConfiguration:
+        Type: REGIONAL
+
+  GetUTCTime:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: GetUTCTime.lambda_handler
+      Runtime: python3.7
+      MemorySize: 128
+      Timeout: 3
+      FunctionName: RandomChat-GetUTCTime
+      AutoPublishAlias: RandomChatGetUTCTimeAlias
+      Description: returns UTC epoch time
+      CodeUri: ../Lambda/Functions/GetUTCTime.py
+      DeploymentPreference:
+          Type: AllAtOnce
+      Events:
+        APIUTCTimeGetEvent:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+            RestApiId: 
+              Ref: APIUTCTime
+
+Outputs:
+  MessagesOutput:
+    Description: API URL for Lambda functions dealing with DynamoDB RandomChat-Messages table
+    Value: !Sub "https://${APIMessages}.execute-api.us-east-2.amazonaws.com/dev/"
+    Export:
+      Name: RandomChatAPIURLMessages
+
+  FriendsOutput:
+    Description: API URL for Lambda functions dealing with DynamoDB RandomChat-Friends table
+    Value: !Sub "https://${APIFriends}.execute-api.us-east-2.amazonaws.com/dev/"
+    Export:
+      Name: RandomChatAPIURLFriends
+  
+  ListCognitoUsersOutput:
+    Description: API URL for Lambda functions dealing with Cognito Userpool -> RandomChat-User
+    Value: !Sub "https://${APIListCognitoUsers}.execute-api.us-east-2.amazonaws.com/dev/"
+    Export:
+      Name: RandomChatAPIURLListCognitoUsers
+
+  UTCTimeOutput:
+    Description: API URL to get the UTC time
+    Value: !Sub "https://${APIUTCTime}.execute-api.us-east-2.amazonaws.com/dev/"
+    Export:
+      Name: RandomChatAPIURLUTCTime

@@ -1,0 +1,22 @@
+# yet to add comments
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  RandomChatAWSSDKv3ClientCognitoIdentityProvider:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      Description: Layer that contains version 3 of AWS SDK for CognitoIdentityProvider
+      LayerName: RandomChat-AWSSDK-v3-client-cognito-identity-provider
+      CompatibleRuntimes:
+        - nodejs16.x
+      ContentUri: ../Lambda/Layers/v3-AWSSDK-client-cognito-identity-provider
+      RetentionPolicy: Retain
+
+Outputs:
+  RandomChatAWSSDKv3ClientCognitoIdentityProviderOutput:
+    Description: ARN of the layer
+    Value: !Ref RandomChatAWSSDKv3ClientCognitoIdentityProvider
+    Export:
+      Name: RandomChatAWSSDKv3ClientCognitoIdentityProviderLayerARN

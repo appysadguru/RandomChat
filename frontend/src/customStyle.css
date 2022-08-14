@@ -1,0 +1,21 @@
+
+.image-css {
+    width: 100%;
+    max-width: 100px;
+    height: auto;
+    position: relative;
+    bottom: -525px;
+    left: 47%
+  }
+
+.custom-space {
+  width: 100%;
+  height: auto
+}
+
+.style-messages {
+    max-height: 300px;
+    overflow: scroll;
+    flex-direction: column-reverse !important;
+    display: flex;
+}

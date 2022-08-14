@@ -1,0 +1,52 @@
+# yet to add comments
+
+AWSTemplateFormatVersion: "2010-09-09"
+Resources: 
+  DynamoDBMessagesTable: 
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: "RandomChat-Messages"
+      AttributeDefinitions: 
+        - 
+          AttributeName: "UserIDs"
+          AttributeType: "S"
+        - 
+          AttributeName: "TimestampMilliseconds"
+          AttributeType: "N"
+      KeySchema: 
+        - 
+          AttributeName: "UserIDs"
+          KeyType: "HASH"
+        - 
+          AttributeName: "TimestampMilliseconds"
+          KeyType: "RANGE"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "20"
+        WriteCapacityUnits: "20"
+      TimeToLiveSpecification:
+        AttributeName: "ExpirationTime"
+        Enabled: true
+
+  DynamoDBFriendsTable: 
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: "RandomChat-Friends"
+      AttributeDefinitions: 
+        - 
+          AttributeName: "Username"
+          AttributeType: "S"
+        - 
+          AttributeName: "FriendUsername"
+          AttributeType: "S"
+      KeySchema: 
+        - 
+          AttributeName: "Username"
+          KeyType: "HASH"
+        - 
+          AttributeName: "FriendUsername"
+          KeyType: "RANGE"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "20"
+        WriteCapacityUnits: "20"
+
+

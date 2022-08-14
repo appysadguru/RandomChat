@@ -1,0 +1,57 @@
+# yet to add comments
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources: 
+
+  CognitoUserPoolUser:
+    Type: AWS::Cognito::UserPool
+    Properties: 
+      LambdaConfig: 
+        PreSignUp: !ImportValue RandomChatCognitoUserPoolPreSignup
+      Policies: 
+        PasswordPolicy:
+          MinimumLength: 6
+          RequireLowercase: True
+          RequireNumbers: True
+          RequireSymbols: True
+          RequireUppercase: True
+      Schema: 
+        - AttributeDataType: String
+          Name: lastseen
+          Required: False
+          Mutable: True
+      UsernameConfiguration: 
+        CaseSensitive: True
+      UserPoolName: RandomChat-User
+
+  CognitoUserPoolUserAppClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties: 
+      ClientName: RandomChat-User-AppClient
+      IdTokenValidity: 24
+      ReadAttributes:
+        - 'custom:lastseen'
+      WriteAttributes:
+        - 'custom:lastseen'
+      UserPoolId: !Ref CognitoUserPoolUser
+
+Outputs:
+  CognitoUserPoolUserARNOutput:
+    Description: ARN of CognitoUserPool RandomChat-User
+    Value: !GetAtt CognitoUserPoolUser.Arn
+    Export:
+      Name: RandomChatCognitoUserPoolUserARN
+
+  CognitoUserPoolUserIDOutput:
+    Description: ID of CognitoUserPool RandomChat-User
+    Value: !Ref CognitoUserPoolUser
+    Export:
+      Name: RandomChatCognitoUserPoolUserID
+
+  CognitoUserPoolUserAppClientIDOutput:
+    Description: ID of CognitoUserPool RandomChat-User-AppClient
+    Value: !Ref CognitoUserPoolUserAppClient
+    Export:
+      Name: RandomChatCognitoUserPoolUserAppClientID
