@@ -5,6 +5,8 @@ import CustomAccordion from './Components/CustomAccordion';
 import FullScreenModal from './Components/FullScreenModal';
 import './customStyle.css';
 
+
+
 	
 function App() {
 
@@ -12,7 +14,7 @@ function App() {
 	const currentUser =  useRef();	// current user's username(string)
 	const IdToken =  useRef();	// Cognito idToken(string)
 	const currentUserData =  useRef();	// current user's Cognito data(object)
-
+	
 	// called by FullScreenModal component
 	const setCurrentUser = value => {
 		currentUser.current = value['user'];

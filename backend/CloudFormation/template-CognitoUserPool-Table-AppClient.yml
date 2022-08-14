@@ -33,9 +33,9 @@ Resources:
       IdTokenValidity: 24
       ReadAttributes:
         - 'custom:lastseen'
-      UserPoolId: !Ref CognitoUserPoolUser
       WriteAttributes:
         - 'custom:lastseen'
+      UserPoolId: !Ref CognitoUserPoolUser
 
 Outputs:
   CognitoUserPoolUserARNOutput:

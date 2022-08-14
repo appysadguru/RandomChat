@@ -15,7 +15,7 @@ function FullScreenModal(props) {
         event.preventDefault();
         
         let username = refInput.current.value;
-		const password = 'dumMy@6';		// using the same dummy password for every user(so that we don't have to ask the user to enter password)
+		const password = 'dumMy@6';		// using the same dummy password for every user(so that we don't have to ask the user to enter a password)
 
 		UserPool.signUp(username, password, [], null, (err, data) => {
 			if (err) {
@@ -46,7 +46,7 @@ function FullScreenModal(props) {
 						props.setCurrentUser({'user': username, 'IdToken': data['idToken']['jwtToken']});
 
 						// send the details to start polling the Cognito database
-                        pollCognitoUsers(props.mapUsers, props.setmapUsers, username, props.setCurrentUserData);
+                        pollCognitoUsers(props.mapUsers, props.setmapUsers, username, props.setCurrentUserData, data['idToken']['jwtToken']);
 
 						// now that the user is created, close the Modal
                         setShow(false); 

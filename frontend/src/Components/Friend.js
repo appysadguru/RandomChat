@@ -11,12 +11,13 @@ const Friend = props => {
     const IdToken = props.IdToken;
     const friend = props.friend;
     const data = props.data;
+    const currentUTC = props.currentUTC;
 
     const [newMsgVisibility, setnewMsgVisibility] = useState('invisible');      // State Variable - to display the new msg blue icon(string)
     
     const accordionItem =  useRef();
-    const isOnline =  useRef(new Date() - data['UserLastModifiedDate']);
-    
+    const isOnline =  useRef(currentUTC - Date.parse(data['UserLastModifiedDate']));
+
 
     // calculate the partition key for the current user and the current friend. used to store msgs in the DynamoDB 'RandomChat-Messages' table
     // compare the usernames alphabetically and create the partition key
@@ -30,7 +31,7 @@ const Friend = props => {
     const remainder =  useRef((currentUser < friend) ? 0 : 1);
     
     if (isOnline.current !== false) {
-        const timeSinceLastUpdate = new Date() - data['UserLastModifiedDate'];
+        const timeSinceLastUpdate = currentUTC - Date.parse(data['UserLastModifiedDate']);
         
         // if it has been more than a minute and a half since the current friend's 'UserLastModifiedDate' value has changed then consider him as offline
         isOnline.current = (timeSinceLastUpdate > 90000) ? false : true;

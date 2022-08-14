@@ -21,8 +21,8 @@ Resources:
           AttributeName: "TimestampMilliseconds"
           KeyType: "RANGE"
       ProvisionedThroughput: 
-        ReadCapacityUnits: "10"
-        WriteCapacityUnits: "10"
+        ReadCapacityUnits: "20"
+        WriteCapacityUnits: "20"
       TimeToLiveSpecification:
         AttributeName: "ExpirationTime"
         Enabled: true
@@ -46,7 +46,7 @@ Resources:
           AttributeName: "FriendUsername"
           KeyType: "RANGE"
       ProvisionedThroughput: 
-        ReadCapacityUnits: "10"
-        WriteCapacityUnits: "10"
+        ReadCapacityUnits: "20"
+        WriteCapacityUnits: "20"
 
 

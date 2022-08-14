@@ -10,7 +10,7 @@ async function getPairedUsers(Username,setPairedUsers,IdToken) {
 			method: 'GET',
 			headers: {'Authorization': IdToken},
 		}
-		const response = await fetch('https://yldweyq5ri.execute-api.us-east-2.amazonaws.com/dev/?Username='+Username, options);
+		const response = await fetch('https://e6a3psxox5.execute-api.us-east-2.amazonaws.com/dev/?Username='+Username, options);
 		const data = await response.json();
 	    
 		const pairedUsers = new Map();
@@ -25,6 +25,16 @@ async function getPairedUsers(Username,setPairedUsers,IdToken) {
 	}
 }
 
+async function timeUTC(setCurrentUTC) {
+	try {
+		const response = await fetch('https://1pb8pbfss1.execute-api.us-east-2.amazonaws.com/dev/');
+		setCurrentUTC(await response.json());
+	} catch (error) {
+		console.error(error);
+		alert('error getting the UTC time');
+	}
+}
+
 // component to get the paired users/friends and an array of online users/friends
 const CustomAccordion = props => {
 
@@ -35,10 +45,17 @@ const CustomAccordion = props => {
 	const mapUsers = props.mapUsers;
 
 	const pairedUsers = useRef(new Map());
+	const currentUTC = useRef();
 
 	const setPairedUsers = value => {
 		pairedUsers.current = value;
 	}
+
+	const setCurrentUTC = value => {
+		currentUTC.current = value;
+	}
+
+	timeUTC(setCurrentUTC);
 
 	// after the current user is created, get the paired users/friends(users who have sent the first msg)
 	if (currentUser) { getPairedUsers(currentUser, setPairedUsers, IdToken) }
@@ -49,19 +66,19 @@ const CustomAccordion = props => {
 	const arrayUsers = [];
 
 	if (currentUserData) {
-		const currentUserUserCreateDate = currentUserData['UserCreateDate'];	// get when the current user is created
-		
+		const currentUserUserCreateDate = Date.parse(currentUserData['UserCreateDate']);	// get when the current user is created
+
 		arrayUsernames.forEach((username, index, arr) => {
 
 			// get the last modified datetime of each friend/user
-			const currentFriendLastModifiedDate = mapUsers.get(username)['UserLastModifiedDate'];
+			const currentFriendLastModifiedDate = Date.parse(mapUsers.get(username)['UserLastModifiedDate']);
 
 			const timeDiff = currentUserUserCreateDate - currentFriendLastModifiedDate;
-
+			
 			// if the time gap between the last modified datetime of a friend and the current user created datetime is more than a minute and a half then 
 			// don't show the user under the list of 'Users'
 			if (timeDiff < 90001)
-				arrayUsers.push(<Friend key={username} friend={username} currentUser={currentUser} IdToken={IdToken} data={mapUsers.get(username)} newlyAdded={ pairedUsers.current.get(username) || boolFalse } />);
+				arrayUsers.push(<Friend key={username} friend={username} currentUser={currentUser} IdToken={IdToken} data={mapUsers.get(username)} newlyAdded={ pairedUsers.current.get(username) || boolFalse } currentUTC={currentUTC.current} />);
 		});
 	}
 	

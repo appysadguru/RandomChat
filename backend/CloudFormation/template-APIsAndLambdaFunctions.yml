@@ -251,7 +251,7 @@ Resources:
           Hooks:
             PostTraffic: !Ref PostFriendsTest
       Events:
-        APIMessagesGetEvent:
+        APIFriendsGetEvent:
           Type: Api
           Properties:
             Path: /
@@ -338,7 +338,7 @@ Resources:
           Hooks:
             PostTraffic: !Ref GetFriendsTest
       Events:
-        APIMessagesGetEvent:
+        APIFriendsGetEvent:
           Type: Api
           Properties:
             Path: /
@@ -391,6 +391,104 @@ Resources:
         Variables:
           NewVersion: !Ref GetFriends.Version
 
+  APIListCognitoUsers:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: RandomChat-ListCognitoUsers
+      Description: APIs connected to Lambda functions that interact with Cognito Userpool -> RandomChat-User
+      StageName: dev
+      Cors:
+        AllowMethods: "'GET'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+      Auth:
+        Authorizers:
+          CognitoAuthorizerListCognitoUsers:
+            UserPoolArn: !ImportValue RandomChatCognitoUserPoolUserARN
+        DefaultAuthorizer: CognitoAuthorizerListCognitoUsers
+        AddDefaultAuthorizerToCorsPreflight: false
+      EndpointConfiguration:
+        Type: REGIONAL
+
+  GetListCognitoUsers:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: GetListCognitoUsers.handler
+      Runtime: nodejs16.x
+      MemorySize: 128
+      Timeout: 5
+      FunctionName: RandomChat-GetListCognitoUsers
+      AutoPublishAlias: RandomChatGetListCognitoUsersAlias
+      Description: gets a list of users from Cognito Userpool -> RandomChat-User. Invoked by GET method
+      Layers:
+        - !ImportValue RandomChatAWSSDKv3ClientCognitoIdentityProviderLayerARN
+      Policies:
+          - Version: "2012-10-17"
+            Statement:
+            - Effect: "Allow"
+              Action:
+                - "cognito-identity:Describe*"
+                - "cognito-identity:Get*"
+                - "cognito-identity:List*"
+                - "cognito-idp:Describe*"
+                - "cognito-idp:AdminGet*"
+                - "cognito-idp:AdminList*"
+                - "cognito-idp:List*"
+                - "cognito-idp:Get*"
+                - "cognito-sync:Describe*"
+                - "cognito-sync:Get*"
+                - "cognito-sync:List*"
+                - "iam:ListOpenIdConnectProviders"
+                - "iam:ListRoles"
+                - "sns:ListPlatformApplications"
+              Resource: '*'
+      CodeUri: ../Lambda/Functions/GetListCognitoUsers.js
+      DeploymentPreference:
+          Type: AllAtOnce
+      Events:
+        APIListCognitoUsersGetEvent:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+            RestApiId: 
+              Ref: APIListCognitoUsers
+
+  APIUTCTime:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: RandomChat-UTCTime
+      Description: API connected to a Lambda function that returns the UTC epoch time
+      StageName: dev
+      Cors:
+        AllowMethods: "'GET'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+      EndpointConfiguration:
+        Type: REGIONAL
+
+  GetUTCTime:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: GetUTCTime.lambda_handler
+      Runtime: python3.7
+      MemorySize: 128
+      Timeout: 3
+      FunctionName: RandomChat-GetUTCTime
+      AutoPublishAlias: RandomChatGetUTCTimeAlias
+      Description: returns UTC epoch time
+      CodeUri: ../Lambda/Functions/GetUTCTime.py
+      DeploymentPreference:
+          Type: AllAtOnce
+      Events:
+        APIUTCTimeGetEvent:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+            RestApiId: 
+              Ref: APIUTCTime
+
 Outputs:
   MessagesOutput:
     Description: API URL for Lambda functions dealing with DynamoDB RandomChat-Messages table
@@ -403,3 +501,15 @@ Outputs:
     Value: !Sub "https://${APIFriends}.execute-api.us-east-2.amazonaws.com/dev/"
     Export:
       Name: RandomChatAPIURLFriends
+  
+  ListCognitoUsersOutput:
+    Description: API URL for Lambda functions dealing with Cognito Userpool -> RandomChat-User
+    Value: !Sub "https://${APIListCognitoUsers}.execute-api.us-east-2.amazonaws.com/dev/"
+    Export:
+      Name: RandomChatAPIURLListCognitoUsers
+
+  UTCTimeOutput:
+    Description: API URL to get the UTC time
+    Value: !Sub "https://${APIUTCTime}.execute-api.us-east-2.amazonaws.com/dev/"
+    Export:
+      Name: RandomChatAPIURLUTCTime
