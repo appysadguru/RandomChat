@@ -84,7 +84,7 @@ const Chat = props => {
             refInput.current.value = '';
             
             const response = await fetch('https://1pb8pbfss1.execute-api.us-east-2.amazonaws.com/dev/');
-            let time = await response.json();
+            let time = await response.json();   // UTC epoch time
 
             // each time a msg is entered, check if the polling has started
             // if the polling has not started then this must be the first msg. do the following 2 steps:
