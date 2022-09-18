@@ -90,6 +90,7 @@ function FullScreenModal(props) {
 						Messages of the online users disappear after 5 minutes<br/>
 						Use desktop for best results<br/>
 						Click on a random user and start chatting !<br/>
+						(If feeling lonely, you could open a new tab and join as a different user at the same time)
 					</li>
 				</ul>
 			</Modal.Header>
